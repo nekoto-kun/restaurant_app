@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 
+import '../models/menu.dart';
 import '../models/restaurant.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
@@ -63,11 +64,11 @@ class RestaurantDetailScreen extends StatelessWidget {
                         Text(
                           restaurant.name,
                           style:
-                              Theme.of(context).textTheme.headline5!.copyWith(
+                              Theme.of(context).textTheme.headline4!.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(
@@ -110,45 +111,107 @@ class RestaurantDetailScreen extends StatelessWidget {
             ),
           ),
         ],
-        body: LayoutBuilder(
-          builder: (_, constraints) => SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: constraints,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                    child: Text(
-                      'Description',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                    child: ReadMoreText(
-                      restaurant.description,
-                      trimLines: 6,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: 'Show less',
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                    child: Text(
-                      'Menus',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                ],
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                child: Text(
+                  'Description',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: ReadMoreText(
+                  restaurant.description,
+                  trimLines: 6,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: 'Show less',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                child: Text(
+                  'Menus',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+              ..._menuList(context, restaurant),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> _menuList(BuildContext context, Restaurant restaurant) {
+    return List.generate(
+      restaurant.menus.length,
+      (i) {
+        Map<String, List<Menu>> menus = restaurant.menus;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              child: Text(
+                '${[...menus.keys][i][0].toUpperCase()}${[
+                  ...menus.keys
+                ][i].substring(1)}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: List.generate(
+                  [...menus.values][i].length,
+                  (j) => Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5.0,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Container(color: Colors.black12),
+                          ),
+                          Text(
+                            [...menus.values][i][j].name,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -170,10 +233,10 @@ class PersistentHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 101;
+  double get maxExtent => 112;
 
   @override
-  double get minExtent => 101;
+  double get minExtent => 112;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
