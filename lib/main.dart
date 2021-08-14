@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'common/styles.dart';
 import 'models/restaurant.dart';
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: myTextTheme,
-        fontFamily: GoogleFonts.redHatDisplay().fontFamily,
+        fontFamily: 'Red Hat Text',
       ),
       initialRoute: RestaurantListScreen.routeName,
       routes: {
