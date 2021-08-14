@@ -12,9 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  google_fonts: ^2.1.0
   iconsax: ^0.0.8
   readmore: ^2.1.0
+  search_page: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:
@@ -22,5 +22,46 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Red Hat Display
+      fonts:
+        - asset: assets/fonts/RedHatDisplay-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/RedHatDisplay-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/RedHatDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/RedHatDisplay-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/RedHatDisplay-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/RedHatDisplay-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/RedHatDisplay-Black.ttf
+          weight: 900
+        - asset: assets/fonts/RedHatDisplay-BlackItalic.ttf
+          weight: 900
+          style: italic
+    - family: Red Hat Text
+      fonts:
+        - asset: assets/fonts/RedHatText-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/RedHatText-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/RedHatText-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/RedHatText-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/RedHatText-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/RedHatText-BoldItalic.ttf
+          weight: 700
+          style: italic
   assets:
     - assets/local_restaurant.json
+    - assets/images/
