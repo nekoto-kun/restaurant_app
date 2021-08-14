@@ -195,7 +195,16 @@ class RestaurantDetailScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 4,
-                            child: Container(color: Colors.black12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/menu-item-placeholder.png',
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           ),
                           Text(
                             [...menus.values][i][j].name,
