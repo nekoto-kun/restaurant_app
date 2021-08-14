@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:search_page/search_page.dart';
 
 import '../models/restaurant.dart';
 
@@ -17,113 +18,106 @@ class RestaurantListScreen extends StatefulWidget {
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
   late List<Restaurant> restaurants = [];
 
-  final _textController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     _loadData();
   }
 
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
   Future<void> _loadData() async {
-    String? data = await DefaultAssetBundle.of(context)
-        .loadString('assets/local_restaurant.json');
-    setState(() => restaurants = parseRestaurants(data));
-  }
-
-  Widget _updateResult(BuildContext context) {
-    if (_textController.text.isNotEmpty) {
-      final result = restaurants
-          .where((element) => element.name.contains(_textController.text))
-          .toList();
-      return _buildList(context, result);
-    } else {
-      return _buildList(context, restaurants);
+    try {
+      String? data = await DefaultAssetBundle.of(context)
+          .loadString('assets/local_restaurant.json');
+      setState(() => restaurants = parseRestaurants(data));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to fetch restaurant list.',
+            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  color: Colors.white,
+                ),
+          ),
+        ),
+      );
     }
   }
 
   Widget _buildList(BuildContext context, List<Restaurant> restaurants) {
-    if (restaurants.length > 0) {
-      return ListView.builder(
-        itemCount: restaurants.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            leading: Hero(
-              tag: 'img-${restaurants[index].id}',
-              child: Image.network(
-                restaurants[index].pictureId,
-                width: 100,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 100,
-                  child: Placeholder(),
-                ),
+    return ListView.builder(
+      itemCount: restaurants.length,
+      itemBuilder: (context, index) =>
+          _buildListItem(context, restaurants[index]),
+    );
+  }
+
+  ListTile _buildListItem(BuildContext context, Restaurant restaurant) {
+    return ListTile(
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      leading: Hero(
+        tag: 'img-${restaurant.id}',
+        child: Image.network(
+          restaurant.pictureId,
+          width: 100,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            width: 100,
+            child: Placeholder(),
+          ),
+        ),
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            restaurant.name,
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 2),
+          Row(
+            children: [
+              Icon(
+                Iconsax.location,
+                size: 13,
+                color: Theme.of(context).textTheme.caption!.color,
               ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  restaurants[index].name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 2),
-                Row(
-                  children: [
-                    Icon(
-                      Iconsax.location,
-                      size: 13,
-                      color: Theme.of(context).textTheme.caption!.color,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      restaurants[index].city,
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Iconsax.star1,
-                      size: 13,
-                      color: Colors.amber,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      restaurants[index].rating.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            onTap: () => Navigator.pushNamed(
-              context,
-              RestaurantDetailScreen.routeName,
-              arguments: restaurants[index],
-            ),
-          );
-        },
-      );
-    } else {
-      return Container();
-    }
+              SizedBox(width: 8),
+              Text(
+                restaurant.city,
+                style: Theme.of(context).textTheme.caption,
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Iconsax.star1,
+                size: 13,
+                color: Colors.amber,
+              ),
+              SizedBox(width: 8),
+              Text(
+                restaurant.rating.toString(),
+                style: Theme.of(context)
+                    .textTheme
+                    .caption!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
+      ),
+      onTap: () => Navigator.pushNamed(
+        context,
+        RestaurantDetailScreen.routeName,
+        arguments: restaurant,
+      ),
+    );
   }
 
   @override
@@ -134,37 +128,56 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           physics: AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: constraints,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 160,
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Restaurants',
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      Text(
-                        'Restaurant recommendations for you',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ],
+            child: RefreshIndicator(
+              onRefresh: _loadData,
+              color: Theme.of(context).accentColor,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 160,
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Restaurants',
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Text(
+                          'Restaurant recommendations for you',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: TextField(
-                    controller: _textController,
-                  ),
-                ),
-                Expanded(child: _updateResult(context)),
-              ],
+                  Expanded(child: _buildList(context, restaurants)),
+                ],
+              ),
             ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Iconsax.search_normal_1),
+        tooltip: 'Search restaurant',
+        onPressed: () => showSearch(
+          context: context,
+          delegate: SearchPage<Restaurant>(
+            items: restaurants,
+            searchLabel: 'Search restaurant',
+            suggestion: Center(
+              child: Text('Filter restaurant by its name'),
+            ),
+            failure: Center(
+              child: Text('No restaurant found 😓'),
+            ),
+            filter: (restaurant) => [
+              restaurant.name,
+            ],
+            builder: (restaurant) => _buildListItem(context, restaurant),
           ),
         ),
       ),
