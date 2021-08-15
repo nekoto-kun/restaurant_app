@@ -72,10 +72,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         children: [
           Text(
             restaurant.name,
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1!
-                .copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.subtitle1,
           ),
           SizedBox(height: 2),
           Row(
@@ -135,25 +132,40 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 160,
-                    padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Restaurants',
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                        Text(
-                          'Restaurant recommendations for you',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ],
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          )),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Restaurants',
+                            style:
+                                Theme.of(context).textTheme.headline4!.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                          Text(
+                            'Restaurant recommendations for you',
+                            style:
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  Expanded(child: _buildList(context, restaurants)),
+                  Expanded(flex: 9, child: _buildList(context, restaurants)),
                 ],
               ),
             ),

@@ -63,10 +63,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           restaurant.name,
-                          style:
-                              Theme.of(context).textTheme.headline4!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.headline4,
                         ),
                         SizedBox(height: 4),
                         Row(
