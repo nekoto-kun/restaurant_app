@@ -2,21 +2,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 final Color primaryColor = Color(0xFFFFFFFF);
-final Color secondaryColor = Color(0xFF2962FF);
 
-final MaterialColor blueSwatch = MaterialColor(
+final MaterialColor primarySwatch = MaterialColor(
   primaryColor.value,
   <int, Color>{
-    50: Color(0xFFE7E9FF),
-    100: Color(0xFFC2C8FE),
-    200: Color(0xFF96A4FE),
-    300: Color(0xFF6280FF),
-    400: Color(0xFF2962FF),
-    500: Color(0xFF0044FC),
-    600: Color(0xFF003BF0),
-    700: Color(0xFF002FE3),
-    800: Color(0xFF0022D9),
-    900: Color(0xFF0001C0),
+    50: Color(0xFFF7F1EC),
+    100: Color(0xFFEBDBCF),
+    200: Color(0xFFDDC3B0),
+    300: Color(0xFFCFAB90),
+    400: Color(0xFFC59978),
+    500: Color(0xFFBB8760),
+    600: Color(0xFFB57F58),
+    700: Color(0xFFAC744E),
+    800: Color(0xFFA46A44),
+    900: Color(0xFF965733),
   },
 );
 

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Rest au Rant',
       theme: ThemeData(
-        primarySwatch: blueSwatch,
+        primarySwatch: primarySwatch,
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: myTextTheme,
