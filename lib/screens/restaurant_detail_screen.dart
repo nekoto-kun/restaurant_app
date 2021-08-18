@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
@@ -61,9 +62,14 @@ class RestaurantDetailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          restaurant.name,
-                          style: Theme.of(context).textTheme.headline4,
+                        Expanded(
+                          child: AutoSizeText(
+                            restaurant.name,
+                            style: Theme.of(context).textTheme.headline4,
+                            maxLines: 2,
+                            maxFontSize: 56,
+                            minFontSize: 12,
+                          ),
                         ),
                         SizedBox(height: 4),
                         Row(
