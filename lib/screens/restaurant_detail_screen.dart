@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
+import 'package:restaurant_app/models/category.dart';
 
-import '../models/menu.dart';
 import '../models/restaurant.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
@@ -38,7 +38,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                         bottomRight: Radius.circular(16),
                       ),
                       child: Image.network(
-                        restaurant.pictureId,
+                        restaurant.pictureId ?? '',
                         width: 100,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
@@ -62,7 +62,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          restaurant.name,
+                          restaurant.name ?? '-',
                           style: Theme.of(context).textTheme.headline4,
                         ),
                         SizedBox(height: 4),
@@ -75,7 +75,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              restaurant.city,
+                              restaurant.city ?? '-',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption!
@@ -122,7 +122,7 @@ class RestaurantDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: ReadMoreText(
-                  restaurant.description,
+                  restaurant.description ?? '-',
                   trimLines: 6,
                   trimMode: TrimMode.Line,
                   trimCollapsedText: 'Show more',
@@ -146,78 +146,84 @@ class RestaurantDetailScreen extends StatelessWidget {
   }
 
   List<Widget> _menuList(BuildContext context, Restaurant restaurant) {
-    return List.generate(
-      restaurant.menus.length,
-      (i) {
-        Map<String, List<Menu>> menus = restaurant.menus;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: Text(
-                '${[...menus.keys][i][0].toUpperCase()}${[
-                  ...menus.keys
-                ][i].substring(1)}',
-                style: Theme.of(context).textTheme.headline6,
-              ),
+    return [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Text(
+              'Foods',
+              style: Theme.of(context).textTheme.headline6,
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: List.generate(
-                  [...menus.values][i].length,
-                  (j) => Padding(
-                    padding: EdgeInsets.all(4),
+          ),
+          _menuTiles(restaurant.menus?.foods ?? [], context),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Text(
+              'Drinks',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          _menuTiles(restaurant.menus?.drinks ?? [], context),
+        ],
+      ),
+    ];
+  }
+
+  Padding _menuTiles(List<Category> menu, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: GridView.count(
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        children: List.generate(
+          menu.length,
+          (j) => Padding(
+            padding: EdgeInsets.all(4),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 5.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 4,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5.0,
-                            offset: Offset(0, 2),
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/menu-item-placeholder.png',
                           ),
-                        ],
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/menu-item-placeholder.png',
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            [...menus.values][i][j].name,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.subtitle2,
-                          ),
-                        ],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Text(
+                    menu[j].name ?? '-',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                ],
               ),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ),
     );
   }
 }
