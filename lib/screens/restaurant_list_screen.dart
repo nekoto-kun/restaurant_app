@@ -72,7 +72,7 @@ class RestaurantListScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 2),
           Row(
             children: [
               Icon(
@@ -103,55 +103,61 @@ class RestaurantListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (_, constraints) => SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: constraints,
-            child: RefreshIndicator(
-              onRefresh: () =>
-                  Provider.of<RestaurantProvider>(context, listen: false)
-                      .fetchAllRestaurants(),
-              color: Theme.of(context).accentColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).accentColor,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(16),
-                          )),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Restaurants',
-                            style:
-                                Theme.of(context).textTheme.headline4!.copyWith(
-                                      color: Colors.white,
-                                    ),
-                          ),
-                          Text(
-                            'Restaurant recommendations for you',
-                            style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      color: Colors.white,
-                                    ),
-                          ),
-                        ],
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (_, constraints) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: constraints,
+              child: RefreshIndicator(
+                onRefresh: () =>
+                    Provider.of<RestaurantProvider>(context, listen: false)
+                        .fetchAllRestaurants(),
+                color: Theme.of(context).accentColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).accentColor,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
+                            )),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Restaurants',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                    color: Colors.white,
+                                  ),
+                            ),
+                            Text(
+                              'Restaurant recommendations for you',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(flex: 9, child: _buildList(context)),
-                ],
+                    Expanded(flex: 9, child: _buildList(context)),
+                  ],
+                ),
               ),
             ),
           ),
