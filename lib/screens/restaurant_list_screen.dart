@@ -1,53 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:search_page/search_page.dart';
+import 'package:provider/provider.dart';
 
 import '../models/restaurant.dart';
-
+import '../providers/restaurant_provider.dart';
 import 'restaurant_detail_screen.dart';
 
-class RestaurantListScreen extends StatefulWidget {
+class RestaurantListScreen extends StatelessWidget {
   static const String routeName = '/restaurant-list';
 
   const RestaurantListScreen({Key? key}) : super(key: key);
 
-  @override
-  _RestaurantListScreenState createState() => _RestaurantListScreenState();
-}
-
-class _RestaurantListScreenState extends State<RestaurantListScreen> {
-  late List<Restaurant> restaurants = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    try {
-      String? data = await DefaultAssetBundle.of(context)
-          .loadString('assets/local_restaurant.json');
-      setState(() => restaurants = parseRestaurants(data));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to fetch restaurant list.',
-            style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: Colors.white,
-                ),
-          ),
-        ),
-      );
-    }
-  }
-
-  Widget _buildList(BuildContext context, List<Restaurant> restaurants) {
-    return ListView.builder(
-      itemCount: restaurants.length,
-      itemBuilder: (context, index) =>
-          _buildListItem(context, restaurants[index]),
+  Widget _buildList(BuildContext context) {
+    return Consumer<RestaurantProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.Loading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state.state == ResultState.HasData) {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: state.result.restaurants.length,
+            itemBuilder: (context, index) =>
+                _buildListItem(context, state.result.restaurants[index]),
+          );
+        } else if (state.state == ResultState.NoData) {
+          return Center(child: Text(state.message));
+        } else if (state.state == ResultState.Error) {
+          return Center(child: Text(state.message));
+        } else {
+          return Center(child: Text(''));
+        }
+      },
     );
   }
 
@@ -58,7 +41,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       leading: Hero(
         tag: 'img-${restaurant.id}',
         child: Image.network(
-          restaurant.pictureId,
+          restaurant.pictureId ?? '',
           width: 100,
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Container(
@@ -71,7 +54,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            restaurant.name,
+            restaurant.name ?? '-',
             style: Theme.of(context).textTheme.subtitle1,
           ),
           SizedBox(height: 2),
@@ -84,7 +67,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               ),
               SizedBox(width: 8),
               Text(
-                restaurant.city,
+                restaurant.city ?? '-',
                 style: Theme.of(context).textTheme.caption,
               ),
             ],
@@ -126,7 +109,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           child: ConstrainedBox(
             constraints: constraints,
             child: RefreshIndicator(
-              onRefresh: _loadData,
+              onRefresh: () =>
+                  Provider.of<RestaurantProvider>(context, listen: false)
+                      .fetchAllRestaurants(),
               color: Theme.of(context).accentColor,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -165,7 +150,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                       ),
                     ),
                   ),
-                  Expanded(flex: 9, child: _buildList(context, restaurants)),
+                  Expanded(flex: 9, child: _buildList(context)),
                 ],
               ),
             ),
@@ -175,23 +160,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Iconsax.search_normal_1),
         tooltip: 'Search restaurant',
-        onPressed: () => showSearch(
-          context: context,
-          delegate: SearchPage<Restaurant>(
-            items: restaurants,
-            searchLabel: 'Search restaurant',
-            suggestion: Center(
-              child: Text('Filter restaurant by its name'),
-            ),
-            failure: Center(
-              child: Text('No restaurant found 😓'),
-            ),
-            filter: (restaurant) => [
-              restaurant.name,
-            ],
-            builder: (restaurant) => _buildListItem(context, restaurant),
-          ),
-        ),
+        onPressed: () => {},
       ),
     );
   }
