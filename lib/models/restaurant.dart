@@ -27,18 +27,19 @@ class Restaurant {
   double? rating;
   List<CustomerReview>? customerReviews;
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        city: json["city"],
-        address: json["address"],
-        pictureId: json["pictureId"],
+  factory Restaurant.fromJson(Map<String, dynamic>? json) => Restaurant(
+        id: json?["id"],
+        name: json?["name"],
+        description: json?["description"],
+        city: json?["city"],
+        address: json?["address"],
+        pictureId: json?["pictureId"],
         categories: List<Category>.from(
-            json["categories"].map((x) => Category.fromJson(x))),
-        menus: Menu.fromJson(json["menus"]),
-        rating: json["rating"].toDouble(),
+            json?["categories"]?.map((x) => Category.fromJson(x)) ?? []),
+        menus: Menu.fromJson(json?["menus"]),
+        rating: json?["rating"]?.toDouble(),
         customerReviews: List<CustomerReview>.from(
-            json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
+            json?["customerReviews"]?.map((x) => CustomerReview.fromJson(x)) ??
+                []),
       );
 }
