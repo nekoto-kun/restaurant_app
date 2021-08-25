@@ -41,7 +41,7 @@ class RestaurantListScreen extends StatelessWidget {
       leading: Hero(
         tag: 'img-${restaurant.id}',
         child: Image.network(
-          restaurant.pictureId ?? '',
+          'https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}',
           width: 100,
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Container(

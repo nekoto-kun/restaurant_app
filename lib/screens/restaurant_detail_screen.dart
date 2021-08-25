@@ -39,7 +39,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                         bottomRight: Radius.circular(16),
                       ),
                       child: Image.network(
-                        restaurant.pictureId ?? '',
+                        'https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}',
                         width: 100,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
