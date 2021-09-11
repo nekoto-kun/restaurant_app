@@ -12,14 +12,17 @@ class RestaurantProvider extends ChangeNotifier {
     fetchAllRestaurants();
   }
 
-  late RestaurantsResult _restaurantsResult;
+  late RestaurantsResult _restaurantsResult,
+      _searchResult = RestaurantsResult();
   late RestaurantResult _restaurantResult;
+
   String _message = '';
   late ResultState _state;
 
   String get message => _message;
 
   RestaurantsResult get result => _restaurantsResult;
+  RestaurantsResult get searchResult => _searchResult;
   RestaurantResult get detail => _restaurantResult;
 
   ResultState get state => _state;
@@ -58,6 +61,33 @@ class RestaurantProvider extends ChangeNotifier {
         _state = ResultState.HasData;
         notifyListeners();
         return _restaurantResult = data;
+      }
+    } catch (e) {
+      _state = ResultState.Error;
+      notifyListeners();
+      return _message = 'Error --> $e';
+    }
+  }
+
+  Future<dynamic> searchRestaurant({String query = ''}) async {
+    try {
+      _state = ResultState.Loading;
+      notifyListeners();
+      if (query.length > 0) {
+        final data = await apiService.searchRestaurants(query);
+        if (data.restaurants.isEmpty) {
+          _state = ResultState.NoData;
+          notifyListeners();
+          return _message = 'Empty Data';
+        } else {
+          _state = ResultState.HasData;
+          notifyListeners();
+          return _searchResult = data;
+        }
+      } else {
+        _state = ResultState.NoData;
+        notifyListeners();
+        return _message = 'Empty Data';
       }
     } catch (e) {
       _state = ResultState.Error;

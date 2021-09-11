@@ -7,6 +7,7 @@ import 'models/restaurant.dart';
 import 'providers/restaurant_provider.dart';
 import 'screens/restaurant_detail_screen.dart';
 import 'screens/restaurant_list_screen.dart';
+import 'screens/search_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
                 restaurant:
                     ModalRoute.of(context)?.settings.arguments as Restaurant,
               ),
+          SearchScreen.routeName: (context) => SearchScreen(),
         },
       ),
     );
