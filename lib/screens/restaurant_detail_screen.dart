@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
-import 'package:restaurant_app/models/category.dart';
 
+import '../models/category.dart';
 import '../models/restaurant.dart';
+import '../providers/restaurant_provider.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   static const String routeName = '/restaurant-detail';
@@ -115,43 +117,67 @@ class RestaurantDetailScreen extends StatelessWidget {
           ),
         ],
         body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Text(
-                  'Description',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: ReadMoreText(
-                  restaurant.description ?? '-',
-                  trimLines: 6,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: 'Show more',
-                  trimExpandedText: 'Show less',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Text(
-                  'Menus',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              ..._menuList(context, restaurant),
-            ],
+          child: FutureBuilder(
+            future: Provider.of<RestaurantProvider>(context, listen: false)
+                .fetchRestaurantDetail(restaurant.id!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.error != null) {
+                  return Text(snapshot.error.toString());
+                }
+                if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                        child: Text(
+                          'Description',
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: ReadMoreText(
+                          restaurant.description ?? '-',
+                          trimLines: 6,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: 'Show more',
+                          trimExpandedText: 'Show less',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                        child: Text(
+                          'Menus',
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                      ),
+                      ..._menuList(context),
+                    ],
+                  );
+                } else {
+                  return Text('No data');
+                }
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                );
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _menuList(BuildContext context, Restaurant restaurant) {
+  List<Widget> _menuList(BuildContext context) {
     return [
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +189,15 @@ class RestaurantDetailScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          _menuTiles(restaurant.menus?.foods ?? [], context),
+          _menuTiles(
+            Provider.of<RestaurantProvider>(context, listen: false)
+                    .detail
+                    ?.restaurant
+                    ?.menus
+                    ?.foods ??
+                [],
+            context,
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Text(
@@ -171,7 +205,15 @@ class RestaurantDetailScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          _menuTiles(restaurant.menus?.drinks ?? [], context),
+          _menuTiles(
+            Provider.of<RestaurantProvider>(context, listen: false)
+                    .detail
+                    ?.restaurant
+                    ?.menus
+                    ?.drinks ??
+                [],
+            context,
+          ),
         ],
       ),
     ];

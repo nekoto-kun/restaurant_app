@@ -31,11 +31,12 @@ class SearchScreen extends StatelessWidget {
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).accentColor,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(16),
-                              bottomRight: Radius.circular(16),
-                            )),
+                          color: Theme.of(context).colorScheme.secondary,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          ),
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -57,7 +58,12 @@ class SearchScreen extends StatelessWidget {
                                 focusColor: Colors.white,
                                 fillColor: Colors.white12,
                                 hintText: 'Search your restaurant',
+                                hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -78,7 +84,7 @@ class SearchScreen extends StatelessWidget {
                           if (state.state == ResultState.Loading) {
                             return Center(
                               child: CircularProgressIndicator(
-                                color: Theme.of(context).accentColor,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
                             );
                           } else if (state.state == ResultState.HasData) {
@@ -93,7 +99,7 @@ class SearchScreen extends StatelessWidget {
                           } else if (state.state == ResultState.NoData) {
                             return Center(child: Text(state.message));
                           } else if (state.state == ResultState.Error) {
-                            return Center(child: Text(state.message));
+                            return Center(child: Text('Terjadi kesalahan'));
                           } else {
                             return Center(
                               child: Text('Search your restaurant above!'),
